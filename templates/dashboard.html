@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <h1 class="dashboard-title">HR Dashboard</h1>
+    <a href="/logout" class="logout-btn">Logout</a>
+
+    <table class="dashboard-table">
+        <tr>
+            <th>CGPA</th>
+            <th>Experience</th>
+            <th>Skills</th>
+            <th>Score</th>
+            <th>Status</th>
+        </tr>
+
+        {% for item in history %}
+        <tr>
+            <td>{{ item.cgpa }}</td>
+            <td>{{ item.exp }}</td>
+            <td>{{ item.skills }}</td>
+            <td>{{ item.score }}</td>
+            <td class="{{ item.status|lower }}">{{ item.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
