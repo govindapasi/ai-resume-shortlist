@@ -27,4 +27,5 @@ class ResumeMatcher:
         c2 = tf(j)
         return round(cosine(c1, c2) * 100, 2)
 
+
         return round(sim * 100, 2)
