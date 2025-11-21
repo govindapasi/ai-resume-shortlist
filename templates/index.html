@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Shortlist</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+<h1>AI Resume Shortlisting</h1>
+<form method="POST" enctype="multipart/form-data">
+<textarea name="job_desc" placeholder="Enter job description" required></textarea>
+<input type="file" name="resume" required>
+<button type="submit">Submit</button>
+</form>
+{% if result is not none %}
+<div class="result">
+<h2>Match Score: {{ result }}%</h2>
+</div>
+{% endif %}
+</div>
+</body>
+</html>

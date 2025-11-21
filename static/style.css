@@ -1,0 +1,3 @@
+body {font-family: Arial; background: #f2f2f2;}
+.container {width: 40%; margin: auto; background: white; padding:20px; margin-top:40px; border-radius:10px;}
+textarea {width:100%; height:120px;} input, button {width:100%; padding:10px; margin-top:10px;}
