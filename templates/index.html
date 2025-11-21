@@ -77,15 +77,40 @@
 
         <h2 class="section-title">Upload Resume</h2>
 
-        <form method="POST" enctype="multipart/form-data" class="upload-form glass">
-            <textarea name="job_desc" placeholder="Enter the Job Description..." required></textarea>
+      <form method="POST" enctype="multipart/form-data" class="upload-form glass">
 
-            <input type="file" name="resume" required>
+    <!-- JD SHORTCUT BUTTONS -->
+    <div class="jd-shortcuts">
+        <button type="button" onclick="setJD('Software Developer')">Software Developer</button>
+        <button type="button" onclick="setJD('Frontend Developer')">Frontend Developer</button>
+        <button type="button" onclick="setJD('Backend Developer')">Backend Developer</button>
+        <button type="button" onclick="setJD('Machine Learning Engineer')">ML Engineer</button>
+        <button type="button" onclick="setJD('Data Analyst')">Data Analyst</button>
+    </div>
 
-            <button class="upload-btn glow" type="submit">
-                Analyze Resume
-            </button>
-        </form>
+    <textarea name="job_desc" placeholder="Enter the Job Description..." required></textarea>
+
+    <input type="file" name="resume" required>
+
+    <button class="upload-btn glow" type="submit">
+        Analyze Resume
+    </button>
+</form>
+
+<!-- JD FILLER SCRIPT -->
+<script>
+function setJD(type) {
+    const jd = {
+        "Software Developer": `Looking for a software developer skilled in Python, JavaScript, SQL, APIs, problem solving, and debugging.`,
+        "Frontend Developer": `Seeking a frontend developer skilled in HTML, CSS, JavaScript, React, UI/UX, responsive design.`,
+        "Backend Developer": `Hiring backend developer with experience in Python/Node, REST APIs, databases, authentication.`,
+        "Machine Learning Engineer": `Need ML engineer with knowledge of Python, ML algorithms, data preprocessing, model training, TensorFlow/PyTorch.`,
+        "Data Analyst": `Looking for data analyst skilled in Excel, SQL, Python, data cleaning, Power BI/Tableau, visualization.`
+    };
+
+    document.querySelector("textarea[name='job_desc']").value = jd[type];
+}
+</script>
 
 
         <!-- RESULTS BOX -->
