@@ -1,33 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>HR Dashboard | AI Resume Shortlister</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/animations.js" defer></script>
 </head>
 
-<body>
+<body class="dashboard-body">
 
-    <h1 class="dashboard-title">HR Dashboard</h1>
-    <a href="/logout" class="logout-btn">Logout</a>
+    <!-- NAVBAR -->
+    <nav class="navbar glass">
+        <h2 class="nav-title">HR Dashboard</h2>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
 
-    <table class="dashboard-table">
-        <tr>
-            <th>CGPA</th>
-            <th>Experience</th>
-            <th>Skills</th>
-            <th>Score</th>
-            <th>Status</th>
-        </tr>
+    <!-- HEADER -->
+    <header class="dashboard-header fade-in">
+        <h1 class="dashboard-title">Shortlist Overview</h1>
+        <p class="dashboard-sub">Insights from analyzed resumes</p>
+    </header>
 
-        {% for item in history %}
-        <tr>
-            <td>{{ item.cgpa }}</td>
-            <td>{{ item.exp }}</td>
-            <td>{{ item.skills }}</td>
-            <td>{{ item.score }}</td>
-            <td class="{{ item.status|lower }}">{{ item.status }}</td>
-        </tr>
-        {% endfor %}
+    <!-- SUMMARY CARDS -->
+    <section class="summary-section fade-in-up">
+
+        <div class="summary-grid">
+
+            <div class="summary-card glass">
+                <h3>Total Resumes</h3>
+                <p class="summary-value">{{ history|length }}</p>
+            </div>
+
+            <div class="summary-card glass">
+                <h3>Shortlisted</h3>
+                <p class="summary-value">
+                    {{ history | selectattr("status", "equalto", "Shortlisted") | list | length }}
+                </p>
+            </div>
+
+            <div class="summary-card glass">
+                <h3>Rejected</h3>
+                <p class="summary-value">
+                    {{ history | selectattr("status", "equalto", "Rejected") | list | length }}
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TABLE SECTION -->
+    <section class="table-section fade-in-up">
+        <h2 class="section-title">Candidate Records</h2>
+
+        <table class="dashboard-table glass">
+            <tr>
+                <th>CGPA</th>
+                <th>Experience</th>
+                <th>Skills</th>
+                <th>Score</th>
+                <th>Status</th>
+            </tr>
+
+            {% for item in history %}
+            <tr>
+                <td>{{ item.cgpa }}</td>
+                <td>{{ item.exp }} yrs</td>
+                <td>{{ item.skills }}</td>
+                <td>{{ item.score }}%</td>
+                <td class="{{ item.status|lower }}">{{ item.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer glass">
+        <p>AI Resume Shortlister — Admin Dashboard</p>
+    </footer>
+
+</body>
+</html>
+
     </table>
 
 </body>
