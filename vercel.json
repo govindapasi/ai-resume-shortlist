@@ -1,4 +1,6 @@
 {
-  "functions": { "api/**.py": { "runtime": "python3.11" } },
-  "routes": [ { "src": "/(.*)", "dest": "/app.py" } ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    { "src": "/(.*)", "dest": "/app.py" }
+  ]
 }
