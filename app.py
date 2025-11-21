@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, session, url_for
 from model import ResumeMatcher
 from PyPDF2 import PdfReader
 import docx, re
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+
+# SECRET KEY FOR LOGIN SESSIONS
+app.secret_key = "supersecret123"
+
 matcher = ResumeMatcher()
 
 history = []   # stores shortlist history
@@ -36,9 +40,11 @@ def extract_experience(text):
 
 
 # ------------------ Skill Extraction ------------------
-skill_list = ["python", "java", "c++", "html", "css", "javascript",
-              "machine learning", "deep learning", "sql", "excel",
-              "communication", "react"]
+skill_list = [
+    "python","java","c++","html","css","javascript",
+    "machine learning","deep learning","sql","excel",
+    "communication","react","node","flutter","django"
+]
 
 def extract_skills(text):
     found = []
@@ -64,7 +70,38 @@ def extract_from_docx(path):
     return "\n".join(p.text for p in d.paragraphs)
 
 
-# ------------------ MAIN ------------------
+# ------------------ LOGIN PAGE ------------------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user = request.form["username"]
+        pwd = request.form["password"]
+
+        if user == "admin" and pwd == "admin123":
+            session["logged_in"] = True
+            return redirect("/dashboard")
+        else:
+            return render_template("login.html", error="Invalid Credentials")
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop("logged_in", None)
+    return redirect("/login")
+
+
+# ------------------ DASHBOARD ------------------
+@app.route("/dashboard")
+def dashboard():
+    if "logged_in" not in session:
+        return redirect("/login")
+
+    return render_template("dashboard.html", history=history)
+
+
+# ------------------ MAIN (HOME) ------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
     score = None
@@ -82,16 +119,13 @@ def home():
         path = f"temp.{ext}"
         file.save(path)
 
-        # Extract resume text
         resume_text = extract_from_pdf(path) if ext == "pdf" else extract_from_docx(path)
-        preview = resume_text[:1500]  # first 1500 chars
+        preview = resume_text[:1500]
 
-        # Extract data
         cgpa = extract_cgpa(resume_text)
         exp = extract_experience(resume_text)
         skills = extract_skills(resume_text)
 
-        # Shortlist Logic
         if cgpa is None:
             message = "❌ CGPA not found."
             status = "Rejected"
@@ -105,12 +139,13 @@ def home():
             message = "✅ Shortlisted!"
             status = "Shortlisted"
 
-        # Save to history
+        # save in history
         history.append({
             "cgpa": cgpa,
             "exp": exp,
             "score": score,
-            "status": status
+            "status": status,
+            "skills": skills
         })
 
     return render_template("index.html",
