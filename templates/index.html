@@ -3,129 +3,128 @@
 <head>
     <title>AI Resume Shortlister</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/animations.js" defer></script>
 </head>
 
 <body>
 
+    <!-- NAVBAR -->
+    <nav class="navbar glass">
+        <h2 class="nav-title">AI Shortlister</h2>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#features">Features</a>
+            <a href="#upload">Upload</a>
+            <a href="/login">HR Login</a>
+        </div>
+    </nav>
+
+
     <!-- HERO SECTION -->
-    <section class="hero">
+    <section id="hero" class="hero fade-in">
         <h1 class="hero-title">AI RESUME SHORTLISTER</h1>
-        <p class="hero-sub">Smart. Fast. Accurate Hiring.</p>
-        <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'});" class="scroll-btn">
-            Explore Features ↓
+        <p class="hero-sub">Smarter • Faster • More Accurate Hiring</p>
+
+        <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" 
+                class="scroll-btn glow">
+            Explore ↓
         </button>
     </section>
 
 
-    <!-- FEATURES -->
-    <section id="features" class="features">
-        <h2 class="section-title">What This Website Offers</h2>
+    <!-- FEATURES SECTION -->
+    <section id="features" class="features fade-in-up">
+        <h2 class="section-title">What This System Offers</h2>
 
         <div class="feature-grid">
 
-            <div class="feature-card">
+            <div class="feature-card glass fade-in">
                 <h3>CGPA Filtering</h3>
-                <p>Automatically accepts only resumes with CGPA 6.5 or above.</p>
+                <p>Automatically accepts resumes with CGPA ≥ 6.5.</p>
             </div>
 
-            <div class="feature-card">
-                <h3>AI Resume Matching</h3>
-                <p>Smart keyword matching between resume and job description.</p>
+            <div class="feature-card glass fade-in">
+                <h3>AI Matching</h3>
+                <p>Smart semantic similarity matching with keyword analysis.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card glass fade-in">
                 <h3>Skill Extraction</h3>
-                <p>Automatically extracts important skills from the resume.</p>
+                <p>Detects relevant skills like Python, SQL, ML, React, etc.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card glass fade-in">
                 <h3>Experience Detection</h3>
-                <p>Detects total work experience from resume text.</p>
+                <p>Automatically reads “X years” from the resume.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card glass fade-in">
                 <h3>Resume Preview</h3>
-                <p>See the extracted text before shortlisting.</p>
+                <p>Shows resume content before shortlisting.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card glass fade-in">
                 <h3>Shortlist History</h3>
-                <p>Every submitted resume is stored & shown in dashboard.</p>
+                <p>Stores all previous results for HR dashboard.</p>
             </div>
 
         </div>
     </section>
 
 
-    <!-- UPLOAD FORM -->
-    <section id="upload" class="upload-section">
+    <!-- UPLOAD SECTION -->
+    <section id="upload" class="upload-section fade-in-up">
+
         <h2 class="section-title">Upload Resume</h2>
 
-        <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <form method="POST" enctype="multipart/form-data" class="upload-form glass">
+            <textarea name="job_desc" placeholder="Enter the Job Description..." required></textarea>
 
-            <textarea name="job_desc" placeholder="Enter job description..." required></textarea>
             <input type="file" name="resume" required>
 
-            <button class="upload-btn" type="submit">
+            <button class="upload-btn glow" type="submit">
                 Analyze Resume
             </button>
         </form>
 
-        <!-- RESULTS -->
+
+        <!-- RESULTS BOX -->
         {% if message %}
-        <div class="result-box">
-            <p class="msg">{{ message }}</p>
+        <div class="result-box glass fade-in">
+
+            <h3 class="msg">{{ message }}</h3>
 
             {% if cgpa %}
-                <p class="info">CGPA: {{ cgpa }}</p>
+            <p class="info">CGPA: <span>{{ cgpa }}</span></p>
             {% endif %}
 
             {% if exp %}
-                <p class="info">Experience: {{ exp }} years</p>
+            <p class="info">Experience: <span>{{ exp }} years</span></p>
             {% endif %}
 
             {% if skills %}
-                <p class="info">Skills: {{ skills }}</p>
+            <p class="info">Skills: <span>{{ skills }}</span></p>
             {% endif %}
 
             {% if result %}
-                <p class="info">Similarity Score: {{ result }}%</p>
+            <p class="info">Match Score: <span>{{ result }}%</span></p>
             {% endif %}
 
             {% if preview %}
-                <p class="preview-title">Resume Preview:</p>
-                <pre class="preview">{{ preview }}</pre>
+            <p class="preview-title">Resume Preview</p>
+            <pre class="preview">{{ preview }}</pre>
             {% endif %}
+
         </div>
         {% endif %}
 
     </section>
 
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="dashboard">
-        <h2 class="section-title">Shortlist History</h2>
-
-        <table>
-            <tr>
-                <th>CGPA</th>
-                <th>Experience</th>
-                <th>Score</th>
-                <th>Status</th>
-            </tr>
-
-            {% for item in history %}
-            <tr>
-                <td>{{ item.cgpa }}</td>
-                <td>{{ item.exp }}</td>
-                <td>{{ item.score }}</td>
-                <td>{{ item.status }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
+    <!-- FOOTER -->
+    <footer class="footer glass">
+        <p>Crafted with ❤️ | AI Resume Shortlister | 2025</p>
+    </footer>
 
 </body>
-</html>
-
 </html>
