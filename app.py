@@ -5,12 +5,13 @@ import docx, re
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
-# SECRET KEY FOR LOGIN SESSIONS
+# Secret key for login sessions
 app.secret_key = "supersecret123"
 
 matcher = ResumeMatcher()
 
-history = []   # stores shortlist history
+# temporary shortlist history (in-memory)
+history = []
 
 
 # ------------------ CGPA Extraction ------------------
@@ -31,7 +32,7 @@ def extract_cgpa(text):
     return None
 
 
-# ------------------ Experience ------------------
+# ------------------ Experience Extraction ------------------
 def extract_experience(text):
     matches = re.findall(r'([0-9]+)\s+years', text.lower())
     if matches:
@@ -41,9 +42,9 @@ def extract_experience(text):
 
 # ------------------ Skill Extraction ------------------
 skill_list = [
-    "python","java","c++","html","css","javascript",
-    "machine learning","deep learning","sql","excel",
-    "communication","react","node","flutter","django"
+    "python", "java", "c++", "html", "css", "javascript",
+    "machine learning", "deep learning", "sql", "excel",
+    "communication", "react", "node", "flutter", "django"
 ]
 
 def extract_skills(text):
@@ -70,7 +71,7 @@ def extract_from_docx(path):
     return "\n".join(p.text for p in d.paragraphs)
 
 
-# ------------------ LOGIN PAGE ------------------
+# ------------------ LOGIN ------------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -81,7 +82,7 @@ def login():
             session["logged_in"] = True
             return redirect("/dashboard")
         else:
-            return render_template("login.html", error="Invalid Credentials")
+            return render_template("login.html", error="Invalid username or password")
 
     return render_template("login.html")
 
@@ -101,7 +102,7 @@ def dashboard():
     return render_template("dashboard.html", history=history)
 
 
-# ------------------ MAIN (HOME) ------------------
+# ------------------ MAIN PAGE ------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
     score = None
@@ -115,23 +116,24 @@ def home():
         jd = request.form["job_desc"]
         file = request.files["resume"]
 
-        ext = file.filename.split(".")[-1]
+        ext = file.filename.split(".")[-1].lower()
         path = f"temp.{ext}"
         file.save(path)
 
         resume_text = extract_from_pdf(path) if ext == "pdf" else extract_from_docx(path)
-        preview = resume_text[:1500]
+        preview = resume_text[:2000]  # show first part only
 
         cgpa = extract_cgpa(resume_text)
         exp = extract_experience(resume_text)
         skills = extract_skills(resume_text)
 
+        # Shortlisting logic
         if cgpa is None:
             message = "❌ CGPA not found."
             status = "Rejected"
 
         elif cgpa < 6.5:
-            message = f"❌ CGPA {cgpa} < 6.5"
+            message = f"❌ CGPA {cgpa} is below 6.5"
             status = "Rejected"
 
         else:
@@ -139,25 +141,26 @@ def home():
             message = "✅ Shortlisted!"
             status = "Shortlisted"
 
-        # save in history
+        # Save history
         history.append({
             "cgpa": cgpa,
             "exp": exp,
+            "skills": skills,
             "score": score,
             "status": status,
-            "skills": skills
         })
 
-    return render_template("index.html",
-                           result=score,
-                           cgpa=cgpa,
-                           skills=skills,
-                           exp=exp,
-                           preview=preview,
-                           message=message,
-                           history=history)
+    return render_template(
+        "index.html",
+        result=score,
+        cgpa=cgpa,
+        skills=skills,
+        exp=exp,
+        preview=preview,
+        message=message,
+        history=history
+    )
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
