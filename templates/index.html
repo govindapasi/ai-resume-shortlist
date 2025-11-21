@@ -4,31 +4,128 @@
     <title>AI Resume Shortlister</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
 
-    <h1 class="gradient-text">AI RESUME SHORTLISTER</h1>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1 class="hero-title">AI RESUME SHORTLISTER</h1>
+        <p class="hero-sub">Smart. Fast. Accurate Hiring.</p>
+        <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'});" class="scroll-btn">
+            Explore Features ↓
+        </button>
+    </section>
 
-    <div class="container">
-        <form method="POST" enctype="multipart/form-data">
+
+    <!-- FEATURES -->
+    <section id="features" class="features">
+        <h2 class="section-title">What This Website Offers</h2>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <h3>CGPA Filtering</h3>
+                <p>Automatically accepts only resumes with CGPA 6.5 or above.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>AI Resume Matching</h3>
+                <p>Smart keyword matching between resume and job description.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Skill Extraction</h3>
+                <p>Automatically extracts important skills from the resume.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Experience Detection</h3>
+                <p>Detects total work experience from resume text.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Resume Preview</h3>
+                <p>See the extracted text before shortlisting.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Shortlist History</h3>
+                <p>Every submitted resume is stored & shown in dashboard.</p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- UPLOAD FORM -->
+    <section id="upload" class="upload-section">
+        <h2 class="section-title">Upload Resume</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+
             <textarea name="job_desc" placeholder="Enter job description..." required></textarea>
             <input type="file" name="resume" required>
-            <button type="submit">Shortlist</button>
+
+            <button class="upload-btn" type="submit">
+                Analyze Resume
+            </button>
         </form>
 
-        {% if result is not none %}
-        <div class="result">
-            {% if message %}
-<p style="color:white; text-align:center; font-size:20px;">{{ message }}</p>
-{% endif %}
+        <!-- RESULTS -->
+        {% if message %}
+        <div class="result-box">
+            <p class="msg">{{ message }}</p>
 
-{% if cgpa %}
-<p style="color:#00eaff; text-align:center;">Extracted CGPA: {{ cgpa }}</p>
-{% endif %}
+            {% if cgpa %}
+                <p class="info">CGPA: {{ cgpa }}</p>
+            {% endif %}
 
-            <h2>Match Score: {{ result }}%</h2>
+            {% if exp %}
+                <p class="info">Experience: {{ exp }} years</p>
+            {% endif %}
+
+            {% if skills %}
+                <p class="info">Skills: {{ skills }}</p>
+            {% endif %}
+
+            {% if result %}
+                <p class="info">Similarity Score: {{ result }}%</p>
+            {% endif %}
+
+            {% if preview %}
+                <p class="preview-title">Resume Preview:</p>
+                <pre class="preview">{{ preview }}</pre>
+            {% endif %}
         </div>
         {% endif %}
-    </div>
+
+    </section>
+
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="dashboard">
+        <h2 class="section-title">Shortlist History</h2>
+
+        <table>
+            <tr>
+                <th>CGPA</th>
+                <th>Experience</th>
+                <th>Score</th>
+                <th>Status</th>
+            </tr>
+
+            {% for item in history %}
+            <tr>
+                <td>{{ item.cgpa }}</td>
+                <td>{{ item.exp }}</td>
+                <td>{{ item.score }}</td>
+                <td>{{ item.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
 
 </body>
+</html>
+
 </html>
