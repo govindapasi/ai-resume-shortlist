@@ -1,40 +1,96 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #000000; /* black */
+    background: #000;
+    font-family: Arial;
     margin: 0;
     padding: 0;
+    color: white;
 }
 
-/* Gradient title text */
+/* ---- Animated Gradient Title ---- */
 .gradient-text {
-    font-size: 42px;
+    font-size: 48px;
     font-weight: bold;
     text-align: center;
-    margin: 30px 0;
+    margin-top: 30px;
 
-    background: linear-gradient(to right, #00eaff, #ff00c8);
+    background: linear-gradient(90deg, #00eaff, #ff00c8, #00eaff);
+    background-size: 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
+    animation: slide 5s infinite;
 }
 
+@keyframes slide {
+    0% { background-position: 0%; }
+    50% { background-position: 100%; }
+    100% { background-position: 0%; }
+}
+
+/* ---- Container ---- */
 .container {
-    width: 40%;
-    margin: auto;
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 10px;
+    width: 45%;
+    margin: 30px auto;
+    background: #111;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #00eaff55;
 }
 
+/* ---- Smaller Input Box ---- */
 textarea {
     width: 100%;
-    height: 60px;   /* smaller height */
-    font-size: 14px;
+    height: 60px;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
 }
 
-
-input, button {
+/* ---- Input File ---- */
+input[type="file"] {
     width: 100%;
     padding: 10px;
+    margin-top: 8px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+/* ---- Glowing Neon Button ---- */
+.glow-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+
+    background: #00eaff;
+    border: none;
+    color: black;
+    border-radius: 6px;
+
+    box-shadow: 0 0 12px #00eaff;
+    cursor: pointer;
+}
+
+.glow-btn:hover {
+    box-shadow: 0 0 20px #00eaff;
+}
+
+/* ---- Result Messages ---- */
+.msg {
+    font-size: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cg, .score {
+    text-align: center;
+    font-size: 18px;
+}
+
     margin-top: 10px;
 }
 
