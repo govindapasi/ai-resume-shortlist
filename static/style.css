@@ -368,6 +368,30 @@ input[type="file"] {
     color: #ff4444;
 }
 
+.jd-shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.jd-shortcuts button {
+    padding: 8px 14px;
+    background: #111;
+    color: #00eaff;
+    border: 1px solid #00eaff55;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.jd-shortcuts button:hover {
+    background: #00eaff;
+    color: black;
+    box-shadow: 0 0 10px #00eaff;
+}
 
 /* ===========================
    FOOTER
