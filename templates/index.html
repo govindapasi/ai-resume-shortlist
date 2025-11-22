@@ -140,34 +140,67 @@
 
 
         <!-- RESULTS BOX -->
-        {% if message %}
-        <div class="result-box glass fade-in">
+       {% if message %}
+<div class="result-box glass fade-in">
 
-            <h3 class="msg">{{ message }}</h3>
+    <h3 class="msg">{{ message }}</h3>
 
-            {% if cgpa %}
-            <p class="info">CGPA: <span>{{ cgpa }}</span></p>
+    <!-- CGPA -->
+    {% if cgpa is not none %}
+        <p class="info"><strong>CGPA:</strong> {{ cgpa }}</p>
+    {% else %}
+        <p class="info"><strong>CGPA:</strong> <span style="color:#ff6666;">Missing</span></p>
+    {% endif %}
+
+    <!-- Experience -->
+    {% if exp is not none %}
+        <p class="info"><strong>Experience:</strong> {{ exp }} years</p>
+    {% endif %}
+
+    <!-- Skills found in resume -->
+    {% if skills %}
+        <p class="info"><strong>Skills in Resume:</strong> {{ skills }}</p>
+    {% endif %}
+
+    <!-- Required skills from JD (from last history entry) -->
+    {% set last = history[-1] if history|length > 0 else None %}
+    {% if last and last.required_skills and last.required_skills|length > 0 %}
+        <p class="info"><strong>Required Skills (from JD):</strong> {{ last.required_skills|join(', ') }}</p>
+
+        <p class="info"><strong>Matched Skills:</strong>
+            {% if last.matched_skills %}
+                {{ last.matched_skills|join(', ') }}
+            {% else %}
+                <span style="color:#ffcc66;">None</span>
             {% endif %}
+        </p>
 
-            {% if exp %}
-            <p class="info">Experience: <span>{{ exp }} years</span></p>
+        <p class="info"><strong>Missing Skills:</strong>
+            {% if last.missing_skills %}
+                <span style="color:#ff6666;">{{ last.missing_skills|join(', ') }}</span>
+            {% else %}
+                <span style="color:#00ff88;">None — all required skills present</span>
             {% endif %}
+        </p>
 
-            {% if skills %}
-            <p class="info">Skills: <span>{{ skills }}</span></p>
-            {% endif %}
-
-            {% if result %}
-            <p class="info">Match Score: <span>{{ result }}%</span></p>
-            {% endif %}
-
-            {% if preview %}
-            <p class="preview-title">Resume Preview</p>
-            <pre class="preview">{{ preview }}</pre>
-            {% endif %}
-
-        </div>
+        {% if last.skill_score is not none %}
+            <p class="info"><strong>Skill Match Score:</strong> {{ last.skill_score }}%</p>
         {% endif %}
+    {% else %}
+        {% if result %}
+            <p class="info"><strong>Overall Match Score:</strong> {{ result }}%</p>
+        {% endif %}
+    {% endif %}
+
+    <!-- Preview -->
+    {% if preview %}
+        <p class="preview-title">Resume Preview</p>
+        <pre class="preview">{{ preview }}</pre>
+    {% endif %}
+
+</div>
+{% endif %}
+
 
     </section>
 
