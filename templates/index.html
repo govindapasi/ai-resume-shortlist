@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,38 +39,62 @@
 
         <div class="feature-grid">
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="cgpa">
                 <h3>CGPA Filtering</h3>
                 <p>Automatically accepts resumes with CGPA ≥ 6.5.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="ai">
                 <h3>AI Matching</h3>
                 <p>Smart semantic similarity matching with keyword analysis.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="skills">
                 <h3>Skill Extraction</h3>
                 <p>Detects relevant skills like Python, SQL, ML, React, etc.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="experience">
                 <h3>Experience Detection</h3>
                 <p>Automatically reads “X years” from the resume.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="preview">
                 <h3>Resume Preview</h3>
                 <p>Shows resume content before shortlisting.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
-            <div class="feature-card glass fade-in">
+            <div class="feature-card glass fade-in" role="button" tabindex="0" data-feature="history">
                 <h3>Shortlist History</h3>
                 <p>Stores all previous results for HR dashboard.</p>
+                <div class="card-cta">Learn more →</div>
             </div>
 
         </div>
     </section>
+
+    <!-- FEATURE SLIDE PANEL -->
+    <div id="feature-panel" class="feature-panel" aria-hidden="true">
+        <button id="feature-close" class="feature-close" aria-label="Close feature panel">✕</button>
+
+        <div class="feature-panel-inner glass">
+            <h2 id="feature-title">Feature Title</h2>
+            <p id="feature-desc">Full description goes here.</p>
+
+            <div id="feature-details" class="feature-details">
+                <!-- JS will inject detail bullets here -->
+            </div>
+
+            <div class="feature-actions">
+                <button id="feature-gotit" class="upload-btn">Got it</button>
+            </div>
+        </div>
+    </div>
 
 
     <!-- UPLOAD SECTION -->
@@ -77,40 +102,41 @@
 
         <h2 class="section-title">Upload Resume</h2>
 
-      <form method="POST" enctype="multipart/form-data" class="upload-form glass">
+        <form method="POST" enctype="multipart/form-data" class="upload-form glass">
 
-    <!-- JD SHORTCUT BUTTONS -->
-    <div class="jd-shortcuts">
-        <button type="button" onclick="setJD('Software Developer')">Software Developer</button>
-        <button type="button" onclick="setJD('Frontend Developer')">Frontend Developer</button>
-        <button type="button" onclick="setJD('Backend Developer')">Backend Developer</button>
-        <button type="button" onclick="setJD('Machine Learning Engineer')">ML Engineer</button>
-        <button type="button" onclick="setJD('Data Analyst')">Data Analyst</button>
-    </div>
+            <!-- JD SHORTCUT BUTTONS -->
+            <div class="jd-shortcuts">
+                <button type="button" onclick="setJD('Software Developer')">Software Developer</button>
+                <button type="button" onclick="setJD('Frontend Developer')">Frontend Developer</button>
+                <button type="button" onclick="setJD('Backend Developer')">Backend Developer</button>
+                <button type="button" onclick="setJD('Machine Learning Engineer')">ML Engineer</button>
+                <button type="button" onclick="setJD('Data Analyst')">Data Analyst</button>
+            </div>
 
-    <textarea name="job_desc" placeholder="Enter the Job Description..." required></textarea>
+            <textarea name="job_desc" placeholder="Enter the Job Description..." required></textarea>
 
-    <input type="file" name="resume" required>
+            <input type="file" name="resume" required>
 
-    <button class="upload-btn glow" type="submit">
-        Analyze Resume
-    </button>
-</form>
+            <button class="upload-btn glow" type="submit">
+                Analyze Resume
+            </button>
+        </form>
 
-<!-- JD FILLER SCRIPT -->
-<script>
-function setJD(type) {
-    const jd = {
-        "Software Developer": `Looking for a software developer skilled in Python, JavaScript, SQL, APIs, problem solving, and debugging.`,
-        "Frontend Developer": `Seeking a frontend developer skilled in HTML, CSS, JavaScript, React, UI/UX, responsive design.`,
-        "Backend Developer": `Hiring backend developer with experience in Python/Node, REST APIs, databases, authentication.`,
-        "Machine Learning Engineer": `Need ML engineer with knowledge of Python, ML algorithms, data preprocessing, model training, TensorFlow/PyTorch.`,
-        "Data Analyst": `Looking for data analyst skilled in Excel, SQL, Python, data cleaning, Power BI/Tableau, visualization.`
-    };
+        <!-- JD FILLER SCRIPT -->
+        <script>
+        function setJD(type) {
+            const jd = {
+                "Software Developer": `Looking for a software developer skilled in Python, JavaScript, SQL, APIs, problem solving, and debugging.`,
+                "Frontend Developer": `Seeking a frontend developer skilled in HTML, CSS, JavaScript, React, UI/UX, responsive design.`,
+                "Backend Developer": `Hiring backend developer with experience in Python/Node, REST APIs, databases, authentication.`,
+                "Machine Learning Engineer": `Need ML engineer with knowledge of Python, ML algorithms, data preprocessing, model training, TensorFlow/PyTorch.`,
+                "Data Analyst": `Looking for data analyst skilled in Excel, SQL, Python, data cleaning, Power BI/Tableau, visualization.`
+            };
 
-    document.querySelector("textarea[name='job_desc']").value = jd[type];
-}
-</script>
+            const ta = document.querySelector("textarea[name='job_desc']");
+            if (ta) ta.value = jd[type] || "";
+        }
+        </script>
 
 
         <!-- RESULTS BOX -->
