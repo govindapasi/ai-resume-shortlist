@@ -146,15 +146,27 @@ def dashboard():
 def home():
     score = None
     cgpa = None
-    skills = None
+    skills = None          # skills found in resume (string)
     exp = None
     preview = None
     message = ""
     status = None
 
+    # helper: extract required skills from job description using skill_list
+    def extract_required_skills_from_jd(jd_text):
+        if not jd_text:
+            return []
+        t = jd_text.lower()
+        required = []
+        for s in skill_list:
+            # match whole word or phrase
+            if s in t:
+                required.append(s)
+        return required
+
     if request.method == "POST":
         try:
-            jd = request.form.get("job_desc", "")
+            jd = request.form.get("job_desc", "") or ""
             file = request.files.get("resume")
 
             if not file or file.filename == "":
@@ -177,7 +189,7 @@ def home():
                 return render_template("index.html", result=score, cgpa=cgpa, skills=skills,
                                        exp=exp, preview=preview, message=message, history=history)
 
-            # Try to get size safely
+            # check size
             file_stream = file.stream
             file_stream.seek(0, os.SEEK_END)
             size = file_stream.tell()
@@ -188,67 +200,96 @@ def home():
                 return render_template("index.html", result=score, cgpa=cgpa, skills=skills,
                                        exp=exp, preview=preview, message=message, history=history)
 
-            # Save to a safe temporary path with unique name
+            # save temp
             unique_name = f"upload_{uuid.uuid4().hex}.{ext}"
             temp_dir = "/tmp" if os.path.exists("/tmp") else "."
             temp_path = os.path.join(temp_dir, unique_name)
             safe_save_file(file, temp_path)
 
-            # Extract text depending on type
+            # extract resume text
             resume_text = ""
             if ext == "pdf":
-                try:
-                    resume_text = extract_from_pdf(temp_path)
-                except Exception as e:
-                    raise RuntimeError(f"PDF parsing failed: {e}")
-            else:  # docx
-                try:
-                    resume_text = extract_from_docx(temp_path)
-                except Exception as e:
-                    raise RuntimeError(f"DOCX parsing failed: {e}")
+                resume_text = extract_from_pdf(temp_path)
+            else:
+                resume_text = extract_from_docx(temp_path)
 
             preview = (resume_text or "")[:2000]
             cgpa = extract_cgpa(resume_text)
             exp = extract_experience(resume_text)
-            skills = extract_skills(resume_text)
+            skills_found = extract_skills(resume_text)              # string like "python, react"
+            skills = skills_found
 
-            # Shortlisting logic
-            if cgpa is None:
-                message = "❌ CGPA not found."
-                status = "Rejected"
-            elif cgpa < 6.5:
-                message = f"❌ CGPA {cgpa} is below 6.5"
-                status = "Rejected"
+            # extract required skills from JD
+            required_skills = extract_required_skills_from_jd(jd)
+            # normalize sets
+            req_set = set([s.lower() for s in required_skills])
+            found_set = set([s.strip().lower() for s in (skills_found or "").split(",") if s.strip()])
+
+            # matched and missing skills
+            matched_skills = sorted(list(found_set.intersection(req_set)))
+            missing_skills = sorted(list(req_set.difference(found_set)))
+
+            # skill match score: percent of required skills present (if no required skills, fallback to overall text score)
+            if len(req_set) > 0:
+                skill_score = round((len(matched_skills) / len(req_set)) * 100, 2)
             else:
-                score = matcher.calculate_score(resume_text, jd)
-                message = "✅ Shortlisted!"
-                status = "Shortlisted"
+                # no explicit skills in JD: use text similarity as fallback
+                if jd.strip():
+                    skill_score = matcher.calculate_score(resume_text, jd)
+                else:
+                    skill_score = None
 
-            # Save history
+            # overall similarity (existing lightweight model)
+            overall_score = matcher.calculate_score(resume_text, jd) if jd.strip() else None
+            score = overall_score  # keep backward-compatible variable
+
+            # determine shortlist status (CGPA rule applies)
+            if cgpa is None:
+                cgpa_note = "missing"
+                cgpa_status = "Missing"
+                status = "Rejected"
+                message = "❌ CGPA not found."
+            elif cgpa < 6.5:
+                cgpa_note = "below_threshold"
+                cgpa_status = "Below threshold"
+                status = "Rejected"
+                message = f"❌ CGPA {cgpa} is below 6.5"
+            else:
+                cgpa_note = "ok"
+                cgpa_status = "OK"
+                # Do not auto-reject for missing skills — only notify
+                status = "Shortlisted" if (skill_score is None or skill_score >= 0) else "Shortlisted"
+                message = "✅ Resume processed."
+
+            # Save history including skill-match details
             history.append({
                 "cgpa": cgpa,
+                "cgpa_status": cgpa_status,
                 "exp": exp,
                 "skills": skills,
-                "score": score,
+                "required_skills": required_skills,
+                "matched_skills": matched_skills,
+                "missing_skills": missing_skills,
+                "skill_score": skill_score,
+                "score": overall_score,
                 "status": status,
             })
 
         except Exception as e:
-            # Log full traceback to server logs (Vercel console)
             tb = traceback.format_exc()
             print("=== Server Exception ===")
             print(tb)
-            # Show friendly error to user (do not expose full traceback in production)
-            message = "Server error while processing the resume. If the problem persists, check the file or contact admin."
+            message = "Server error while processing the resume. If the problem persists, contact admin."
             status = "Rejected"
         finally:
-            # Clean up the temp file if it exists
+            # cleanup
             try:
                 if 'temp_path' in locals() and os.path.exists(temp_path):
                     os.remove(temp_path)
-            except Exception:
+            except:
                 pass
 
+    # render with extra values for template
     return render_template(
         "index.html",
         result=score,
